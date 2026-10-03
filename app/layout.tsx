@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Hind_Siliguri } from "next/font/google";
 import ScrollToTop from "./components/scroll-to-top";
+import LanguageProvider from "./components/language-provider";
 import "./globals.css";
 
 const hindSiliguri = Hind_Siliguri({
@@ -17,5 +18,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
-  return <html lang="bn" className={hindSiliguri.variable}><body>{children}<ScrollToTop/></body></html>;
+  return <html lang="bn" className={hindSiliguri.variable}><body><LanguageProvider>{children}</LanguageProvider><ScrollToTop/></body></html>;
 }

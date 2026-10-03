@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const reviews = [
   { quote: "“অনলাইনে দেখে যেমন মনে হয়েছিল, সামনে গিয়ে তার চেয়েও সুন্দর ও সুস্থ গরু পেয়েছি।”", name: "মোঃ আরিফ হাসান", location: "ঢাকা", image: "/Home/Homepage/2.jpg", position: "center 68%" },
-  { quote: "“খামারের পরিবেশ, খাবার আর যত্ন—সবকিছুই স্বচ্ছ। পুরো প্রক্রিয়াটি ছিল নিশ্চিন্ত।”", name: "মোঃ সাইফুল ইসলাম", location: "ময়মনসিংহ", image: "/Home/rabeya-cattle.png", position: "center" },
+  { quote: "“খামারের পরিবেশ, খাবার আর যত্ন—সবকিছুই স্বচ্ছ। পুরো প্রক্রিয়াটি ছিল নিশ্চিন্ত।”", name: "মোঃ সাইফুল ইসলাম", location: "ময়মনসিংহ", image: "/Home/rabeya-cattle-optimized.jpg", position: "center" },
   { quote: "“সময়মতো ডেলিভারি এবং দারুণ ব্যবহার। আগামী বছরও Rabeya Farm-ই প্রথম পছন্দ।”", name: "মোঃ রাকিবুল হাসান", location: "গাজীপুর", image: "/Home/Homepage/1.jpg", position: "center" },
 ];
 

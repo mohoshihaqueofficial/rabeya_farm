@@ -12,7 +12,7 @@ export default function KorbaniGoruPage() {
   return <main className="catalogue-page">
     <SiteHeader active="cattle" />
     <section className="catalogue-banner">
-      <Image src="/Home/rabeya-hero.png" alt="সবুজ মাঠে সাদা ব্রাহমা গরু" fill preload sizes="100vw" />
+      <Image src="/Home/rabeya-hero-optimized.jpg" alt="সবুজ মাঠে সাদা ব্রাহমা গরু" fill preload sizes="100vw" />
       <div className="catalogue-banner-shade" />
       <div className="shell catalogue-banner-content">
         <Link href="/" className="catalogue-back">← হোমে ফিরুন</Link>

@@ -30,7 +30,7 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-09-25",
     publishedLabel: "২৫ সেপ্টেম্বর ২০২৬",
     readTime: "৫ মিনিট পড়ুন",
-    coverImage: "/Home/rabeya-cattle.png",
+    coverImage: "/Home/rabeya-cattle-optimized.jpg",
     imagePosition: "center",
     featured: true,
     active: true,
@@ -49,7 +49,7 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-09-20",
     publishedLabel: "২০ সেপ্টেম্বর ২০২৬",
     readTime: "৪ মিনিট পড়ুন",
-    coverImage: "/Home/rabeya-home-delivery.png",
+    coverImage: "/Home/rabeya-home-delivery-optimized.jpg",
     imagePosition: "center",
     active: true,
     content: [
@@ -85,7 +85,7 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-09-08",
     publishedLabel: "৮ সেপ্টেম্বর ২০২৬",
     readTime: "৫ মিনিট পড়ুন",
-    coverImage: "/Home/qurbani-donation-distribution.png",
+    coverImage: "/Home/qurbani-donation-distribution-optimized.jpg",
     imagePosition: "center",
     active: true,
     content: [

@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import DualRange from "./dual-range";
-import { filterCattle, colorLabels, bnNumber, type CowColor, type CattleFilters } from "@/data/cattle";
+import { filterCattle, colorLabels, availabilityLabels, bnNumber, type CowColor, type CattleFilters } from "@/data/cattle";
 
 type Filters = CattleFilters;
 const defaults: Filters = { search: "", minPrice: 50000, maxPrice: 350000, minWeight: 100, maxWeight: 700, colors: [] };
@@ -48,8 +48,8 @@ export default function CattleCatalogue() {
     <div className="catalogue-results" ref={resultsTop}>
       <div className="catalogue-toolbar"><p aria-live="polite">মোট <strong>{bnNumber(found.length)}</strong> টি গরু পাওয়া গেছে</p><label>সাজানঃ <select value={sort} onChange={event => { setSort(event.target.value); setPage(1); }}><option value="default">ডিফল্ট</option><option value="price-low">দাম: কম থেকে বেশি</option><option value="price-high">দাম: বেশি থেকে কম</option><option value="weight">ওজন: বেশি থেকে কম</option></select></label></div>
       <p className="catalogue-demo">ডেমো সংগ্রহ · ছবি, দাম ও ওজন নমুনা তথ্য; বুকিংয়ের আগে নিশ্চিত করুন।</p>
-      <div className="listing-grid">{visible.map(cow => <article className="listing-card" key={cow.id}>
-        <div className="listing-photo"><Image src={cow.image} alt={cow.name} fill sizes="(max-width: 580px) 90vw, (max-width: 1100px) 35vw, 22vw" style={{ objectPosition: cow.position }} /><span className="listing-id">{cow.id}</span><button className="favorite-button" type="button" aria-label={`${cow.id} ${favorites.includes(cow.id) ? "পছন্দ থেকে সরান" : "পছন্দে যোগ করুন"}`} aria-pressed={favorites.includes(cow.id)} onClick={() => setFavorites(favorites.includes(cow.id) ? favorites.filter(id => id !== cow.id) : [...favorites, cow.id])}>{favorites.includes(cow.id) ? "♥" : "♡"}</button></div>
+      <div className="listing-grid">{visible.map(cow => <article className={`listing-card ${cow.availability !== "available" ? "is-unavailable" : ""}`} key={cow.id}>
+        <div className="listing-photo"><Image src={cow.image} alt={cow.name} fill sizes="(max-width: 580px) 90vw, (max-width: 1100px) 35vw, 22vw" style={{ objectPosition: cow.position }} />{cow.availability !== "available" && <span className={`listing-availability ${cow.availability}`}>{availabilityLabels[cow.availability]}</span>}<span className="listing-id">{cow.id}</span><button className="favorite-button" type="button" aria-label={`${cow.id} ${favorites.includes(cow.id) ? "পছন্দ থেকে সরান" : "পছন্দে যোগ করুন"}`} aria-pressed={favorites.includes(cow.id)} onClick={() => setFavorites(favorites.includes(cow.id) ? favorites.filter(id => id !== cow.id) : [...favorites, cow.id])}>{favorites.includes(cow.id) ? "♥" : "♡"}</button></div>
         <div className="listing-info"><h2>{cow.name}</h2><p>ওজন: {bnNumber(cow.weight)} কেজি</p><p>রঙ: {colorLabels[cow.color]}</p><strong>৳ {bnNumber(cow.price)}</strong><Link className="listing-details-link" href={`/korbani-goru/${cow.id}`}>বিস্তারিত দেখুন</Link></div>
       </article>)}</div>
       {!found.length && <div className="catalogue-empty"><h2>এই ফিল্টারে কোনো গরু পাওয়া যায়নি</h2><p>দাম, ওজন বা রঙের পরিসর পরিবর্তন করে আবার চেষ্টা করুন।</p><button type="button" className="button button-dark" onClick={reset}>সব গরু দেখুন</button></div>}
