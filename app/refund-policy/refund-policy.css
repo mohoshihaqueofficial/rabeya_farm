@@ -1,0 +1,58 @@
+.refund-policy-page{background:#f8faf7;color:var(--ink)}
+.policy-hero{position:relative;overflow:hidden;background:linear-gradient(125deg,#063f29,#087146);color:#fff}
+.policy-hero:before,.policy-hero:after{position:absolute;border:1px solid #ffffff14;border-radius:50%;content:""}
+.policy-hero:before{right:-120px;top:-260px;width:620px;height:620px;box-shadow:0 0 0 70px #ffffff08,0 0 0 140px #ffffff05}
+.policy-hero:after{right:30%;bottom:-190px;width:300px;height:300px}
+.policy-hero .shell{position:relative;z-index:1;padding-block:25px 78px}
+.policy-breadcrumb{display:flex;align-items:center;gap:9px;margin-bottom:45px;color:#c9dfd2;font-size:12px}
+.policy-breadcrumb a:hover{color:#fff}
+.policy-kicker{display:flex;align-items:center;gap:9px;margin:0 0 13px;color:#bddd86;font-size:12px;font-weight:750;letter-spacing:.08em}
+.policy-kicker:before{width:25px;height:1px;background:currentColor;content:""}
+.policy-hero h1{max-width:780px;margin:0 0 16px;font-size:clamp(45px,6vw,72px);line-height:1.03;letter-spacing:-.045em}
+.policy-lead{max-width:710px;margin:0;color:#d7e8de;font-size:15px;line-height:1.85}
+.policy-updated{display:inline-flex;margin-top:27px;border:1px solid #ffffff30;border-radius:99px;background:#ffffff0d;padding:7px 12px;color:#d9e9df;font-size:10px}
+.policy-layout{display:grid;grid-template-columns:265px minmax(0,1fr);align-items:start;gap:60px;padding-block:64px 90px}
+.policy-nav{position:sticky;top:104px;border:1px solid #dbe6dd;border-radius:14px;background:#fff;padding:20px;box-shadow:0 12px 35px #163d2910}
+.policy-nav>p{margin:0 0 12px;color:#748279;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.policy-nav>a{display:flex;align-items:center;gap:10px;border-top:1px solid #e7ede8;padding:12px 2px;color:#476052;font-size:11px;font-weight:600;line-height:1.45}
+.policy-nav>a:hover{color:var(--green2)}
+.policy-nav>a>span{color:#8a9a90;font:700 9px Arial}
+.policy-help{margin-top:13px;border-radius:10px;background:#edf6e9;padding:15px}
+.policy-help strong,.policy-help span,.policy-help a{display:block}
+.policy-help strong{font-size:12px;color:var(--green2)}
+.policy-help span{margin:5px 0 10px;color:#68786e;font-size:10px;line-height:1.55}
+.policy-help a{font:750 13px Arial;color:var(--green)}
+.policy-content{min-width:0}
+.policy-notice{display:flex;align-items:flex-start;gap:13px;border:1px solid #d4e5d6;border-radius:12px;background:#eef7ed;padding:17px 19px}
+.policy-notice>span{display:grid;place-items:center;width:25px;height:25px;flex:0 0 25px;border-radius:50%;background:var(--green2);color:#fff;font:700 13px Georgia}
+.policy-notice p{margin:1px 0 0;color:#476052;font-size:12px;line-height:1.75}
+.policy-section{scroll-margin-top:110px;border-bottom:1px solid #dfe7e1;padding-block:45px}
+.policy-section:last-of-type{border-bottom:0}
+.policy-section-heading{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.policy-section-heading>span{display:grid;place-items:center;width:48px;height:48px;flex:0 0 48px;border-radius:12px;background:#eaf4e5;color:var(--green2)}
+.policy-section-heading svg{width:23px;height:23px}
+.policy-section-heading small{display:block;margin-bottom:2px;color:var(--green);font:750 9px Arial;letter-spacing:.08em}
+.policy-section h2{margin:0;font-size:clamp(25px,3vw,33px);letter-spacing:-.035em}
+.policy-section>p{color:#566b60;font-size:14px;line-height:1.9}
+.policy-section>p:last-child{margin-bottom:0}
+.policy-section ul,.policy-section ol{display:grid;gap:12px;margin:23px 0 0;padding:0;list-style:none;counter-reset:policy-list}
+.policy-section li{position:relative;border:1px solid #e0e8e1;border-radius:9px;background:#fff;padding:13px 16px 13px 45px;color:#4d6256;font-size:13px;line-height:1.7}
+.policy-section ul li:before{position:absolute;left:16px;top:16px;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#e6f3e3;color:var(--green2);font:800 10px Arial;content:"✓"}
+.policy-section ol li{counter-increment:policy-list}
+.policy-section ol li:before{position:absolute;left:15px;top:13px;color:var(--green);font:800 12px Arial;content:counter(policy-list,decimal-leading-zero)}
+.policy-callout{display:flex;gap:18px;border-left:3px solid #d4a13b;border-radius:0 9px 9px 0;background:#fff8e9;padding:16px 18px}
+.policy-callout strong{white-space:nowrap;color:#7e5a16;font-size:12px}
+.policy-callout span{color:#73654a;font-size:12px;line-height:1.65}
+.policy-contact-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:21px}
+.policy-contact-row a{border:1px solid #dce7de;border-radius:10px;background:#fff;padding:14px 16px;transition:border-color .2s,transform .2s}
+.policy-contact-row a:hover{border-color:#8bb99b;transform:translateY(-2px)}
+.policy-contact-row span,.policy-contact-row strong{display:block}
+.policy-contact-row span{margin-bottom:4px;color:#7b8a81;font-size:9px}
+.policy-contact-row strong{color:var(--green2);font-size:13px}
+.policy-final-cta{display:flex;align-items:center;justify-content:space-between;gap:30px;margin-top:20px;border-radius:16px;background:linear-gradient(125deg,#063f29,#087146);padding:27px 30px;color:#fff}
+.policy-final-cta p{margin:0 0 4px;color:#bed8c8;font-size:11px}
+.policy-final-cta h2{margin:0;font-size:23px}
+.policy-final-cta>a{display:inline-flex;align-items:center;gap:12px;flex:0 0 auto;border-radius:8px;background:#fff;padding:11px 15px;color:var(--green2);font-size:12px;font-weight:750}
+.policy-final-cta>a span{font:18px Arial}
+@media(max-width:850px){.policy-layout{grid-template-columns:1fr;gap:30px}.policy-nav{position:static;display:none}.policy-hero .shell{padding-bottom:65px}}
+@media(max-width:600px){.policy-hero .shell{padding-block:20px 52px}.policy-breadcrumb{margin-bottom:34px}.policy-hero h1{font-size:43px}.policy-lead{font-size:14px}.policy-layout{padding-block:38px 60px}.policy-section{padding-block:35px}.policy-section-heading{align-items:flex-start}.policy-section-heading>span{width:43px;height:43px;flex-basis:43px}.policy-section h2{font-size:25px}.policy-callout{display:block}.policy-callout strong{display:block;margin-bottom:6px}.policy-contact-row{grid-template-columns:1fr}.policy-final-cta{display:block;padding:23px}.policy-final-cta h2{font-size:21px;line-height:1.35}.policy-final-cta>a{width:max-content;margin-top:18px}}

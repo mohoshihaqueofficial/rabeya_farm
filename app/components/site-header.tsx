@@ -8,7 +8,7 @@ function HeaderIcon({ name }: { name: "pin" | "phone" | "menu" | "user" }) {
   </svg>;
 }
 
-export default function SiteHeader({ active }: { active: "home" | "cattle" | "account" | "contact" | "donation" | "blog" | "about" }) {
+export default function SiteHeader({ active }: { active: "home" | "cattle" | "account" | "contact" | "donation" | "blog" | "about" | "policy" }) {
   const links = [
     { href: "/", label: "হোম", current: active === "home" },
     { href: "/korbani-goru", label: "কোরবানির গরু", current: active === "cattle" },
