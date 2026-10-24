@@ -10,7 +10,15 @@ import LanguageToggle from "@/app/components/language-toggle";
 const mainItems = [
   { href: "/admin", label: "ড্যাশবোর্ড", icon: "grid" as const },
   { href: "/admin/cows", label: "গরুর তালিকা", icon: "cow" as const, badge: "১২" },
+  { href: "/admin/blogs", label: "ব্লগ", icon: "edit" as const },
+];
+// হোমপেজ group: everything editable on the public homepage.
+const homepageItems = [
+  { href: "/admin/homepage/slider", label: "স্লাইডার ছবি", icon: "image" as const },
+  { href: "/admin/homepage/reviews", label: "ক্রেতা রিভিউ", icon: "users" as const },
   { href: "/admin/partners", label: "MoU পার্টনার", icon: "handshake" as const },
+  { href: "/admin/homepage/advisors", label: "Advisor Panel", icon: "shield" as const },
+  { href: "/admin/homepage/faq", label: "FAQ · জিজ্ঞাসা", icon: "chart" as const },
 ];
 const soonItems = [
   { label: "অর্ডার", icon: "cart" as const, badge: "৮" },
@@ -21,6 +29,8 @@ const soonItems = [
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const homepageActive = homepageItems.some(item => pathname.startsWith(item.href));
+  const [homepageOpen, setHomepageOpen] = useState(homepageActive);
   return <div className="admin-app">
     <button className={`admin-scrim ${open ? "is-open" : ""}`} aria-label="মেনু বন্ধ করুন" onClick={() => setOpen(false)} />
     <aside className={`admin-sidebar ${open ? "is-open" : ""}`}>
@@ -32,6 +42,9 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       <nav className="admin-nav" aria-label="অ্যাডমিন নেভিগেশন">
         <p>ম্যানেজমেন্ট</p>
         {mainItems.map(item => { const active = item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href); return <Link key={item.href} href={item.href} className={active ? "active" : ""} onClick={() => setOpen(false)}><Icon name={item.icon}/><span>{item.label}</span>{item.badge && <b>{item.badge}</b>}</Link>; })}
+        <button type="button" className={`nav-group ${homepageActive ? "active" : ""} ${homepageOpen ? "is-open" : ""}`} aria-expanded={homepageOpen} aria-controls="homepage-nav" onClick={() => setHomepageOpen(!homepageOpen)}><Icon name="home"/><span>হোমপেজ</span><Icon name="chevron" size={14}/></button>
+        {homepageOpen && <div id="homepage-nav" className="nav-subitems">{homepageItems.map(item => <Link key={item.href} href={item.href} className={pathname.startsWith(item.href) ? "active" : ""} aria-current={pathname.startsWith(item.href) ? "page" : undefined} onClick={() => setOpen(false)}><span>{item.label}</span></Link>)}</div>}
+        <p>শীঘ্রই</p>
         {soonItems.map(item => <button key={item.label} type="button" title="শীঘ্রই আসছে"><Icon name={item.icon}/><span>{item.label}</span>{item.badge && <b>{item.badge}</b>}<small>শীঘ্রই</small></button>)}
         <p>সিস্টেম</p>
         <button type="button" title="শীঘ্রই আসছে"><Icon name="settings"/><span>সেটিংস</span><small>শীঘ্রই</small></button>

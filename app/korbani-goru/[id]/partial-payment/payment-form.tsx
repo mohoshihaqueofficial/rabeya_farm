@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 import { bnNumber } from "@/data/cattle";
+import { markCowBooked, useIsCowBooked } from "../../booked-cows";
 
-export default function PaymentForm({ amount, cowId, paymentType = "partial" }: { amount: number; cowId: string; paymentType?: "partial" | "full" }) {
+export default function PaymentForm({ amount, cowId, paymentType = "partial", unavailable = false }: { amount: number; cowId: string; paymentType?: "partial" | "full"; unavailable?: boolean }) {
   const [fileError, setFileError] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [orderId, setOrderId] = useState("");
@@ -12,6 +14,7 @@ export default function PaymentForm({ amount, cowId, paymentType = "partial" }: 
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [sameAddress, setSameAddress] = useState(false);
   const [customerPhone, setCustomerPhone] = useState("");
+  const bookedHere = useIsCowBooked(cowId);
   const isFullPayment = paymentType === "full";
   const paymentLabel = isFullPayment ? "পূর্ণ পেমেন্ট" : "আংশিক বুকিং";
 
@@ -38,12 +41,21 @@ export default function PaymentForm({ amount, cowId, paymentType = "partial" }: 
     setOrderId(`RF-${isFullPayment ? "F" : "P"}-${datePart}-${randomPart}`);
     setCopied(false);
     setSubmitted(true);
+    markCowBooked(cowId);
   }
 
   async function copyOrderId() {
     await navigator.clipboard.writeText(orderId);
     setCopied(true);
   }
+
+  // Once a payment is in, the cow can't be booked again; keep the success modal visible until closed.
+  if (unavailable || (bookedHere && !submitted)) return <div className="payment-closed" role="status">
+    <span aria-hidden="true">!</span>
+    <h2>এই গরুটি আর বুকিংয়ের জন্য উপলব্ধ নয়</h2>
+    <p><strong>{cowId}</strong> গরুটির পেমেন্ট ইতোমধ্যে সম্পন্ন হয়েছে। অন্য একটি গরু বেছে নিন।</p>
+    <Link href="/korbani-goru">সব গরু দেখুন →</Link>
+  </div>;
 
   return <form className="payment-form" onSubmit={handleSubmit}>
     <input type="hidden" name="cowId" value={cowId}/>
@@ -87,7 +99,7 @@ export default function PaymentForm({ amount, cowId, paymentType = "partial" }: 
       <label className="receipt-field">পেমেন্টের রসিদ {isFullPayment ? "(ঐচ্ছিক)" : "(আবশ্যক)"} {!isFullPayment && <em>*</em>}<input required={!isFullPayment} name="receipt" type="file" accept="image/jpeg,image/png,image/webp" onChange={() => setFileError("")}/><small>JPG, PNG বা WEBP ফাইল (সর্বোচ্চ ৫MB)</small></label>
       {fileError && <p className="file-error" role="alert">{fileError}</p>}
       <label className="payment-consent"><input required name="consent" type="checkbox"/> আমি নিশ্চিত যে, আমি উপরে দেওয়া তথ্য সঠিকভাবে প্রদান করেছি।</label>
-      <button className="payment-submit" type="submit">{isFullPayment ? "পেমেন্ট সম্পন্ন করুন" : "পেমেন্টের তথ্য জমা দিন"}</button>
+      <button className="payment-submit" type="submit" disabled={submitted}>{isFullPayment ? "পেমেন্ট সম্পন্ন করুন" : "পেমেন্টের তথ্য জমা দিন"}</button>
     </fieldset>
   </form>;
 }

@@ -1,8 +1,9 @@
 import type { SVGProps } from "react";
 
-type IconName = "grid" | "cow" | "cart" | "users" | "chart" | "settings" | "bell" | "search" | "plus" | "arrow" | "edit" | "eye" | "save" | "image" | "heart" | "shield" | "more" | "menu" | "close" | "calendar" | "logout" | "chevron" | "check" | "money" | "handshake" | "upload";
+type IconName = "home" | "grid" | "cow" | "cart" | "users" | "chart" | "settings" | "bell" | "search" | "plus" | "arrow" | "edit" | "eye" | "save" | "image" | "heart" | "shield" | "more" | "menu" | "close" | "calendar" | "logout" | "chevron" | "check" | "money" | "handshake" | "upload";
 
 const paths: Record<IconName, React.ReactNode> = {
+  home: <><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></>,
   grid: <><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></>,
   cow: <><path d="M6 8 3 5m15 3 3-3M7 8h10a3 3 0 0 1 3 3v3a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6v-3a3 3 0 0 1 3-3Z"/><path d="M9 14h.01M15 14h.01M9 18c2 1 4 1 6 0"/></>,
   cart: <><path d="M3 4h2l2.4 10.2a2 2 0 0 0 2 1.5h7.8a2 2 0 0 0 1.9-1.4L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></>,

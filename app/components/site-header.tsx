@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import SocialLinks from "./social-links";
 import LanguageToggle from "./language-toggle";
 
 function HeaderIcon({ name }: { name: "pin" | "phone" | "menu" | "user" }) {
@@ -22,7 +23,7 @@ export default function SiteHeader({ active }: { active: "home" | "cattle" | "ac
       <span className="about-menu-trigger" aria-current={active === "about" ? "page" : undefined}>আমাদের সম্পর্কে <span aria-hidden="true" /></span>
       <div className="about-menu-popover">
         <Link href="/about" aria-current={active === "about" ? "page" : undefined}>আমাদের সম্পর্কে</Link>
-        <Link href="/#faq">জিজ্ঞাসা</Link>
+        <Link href="/faq">জিজ্ঞাসা</Link>
       </div>
     </div>
     {links.slice(4).map(link => <Link key={link.href} href={link.href} aria-current={link.current ? "page" : undefined}>{link.label}</Link>)}
@@ -31,11 +32,11 @@ export default function SiteHeader({ active }: { active: "home" | "cattle" | "ac
     {links.slice(0, 4).map(link => <Link key={link.href} href={link.href} aria-current={link.current ? "page" : undefined}>{link.label}</Link>)}
     <span className="mobile-about-label">আমাদের সম্পর্কে</span>
     <Link href="/about" aria-current={active === "about" ? "page" : undefined}>আমাদের সম্পর্কে</Link>
-    <Link href="/#faq">জিজ্ঞাসা</Link>
+    <Link href="/faq">জিজ্ঞাসা</Link>
     {links.slice(4).map(link => <Link key={link.href} href={link.href} aria-current={link.current ? "page" : undefined}>{link.label}</Link>)}
   </>;
   return <>
-    <div className="topbar"><div className="shell topbar-inner"><span><HeaderIcon name="pin"/> উত্তর মানিকপুর, সেনবাগ, নোয়াখালী</span><span><HeaderIcon name="phone"/> ০১৭১২–৩৪৫৬৭৮ <i>●</i> <a href="https://www.facebook.com/rabeyafarm" target="_blank" rel="noopener noreferrer">Facebook</a> &nbsp; Instagram</span></div></div>
+    <div className="topbar"><div className="shell topbar-inner"><span><HeaderIcon name="pin"/> উত্তর মানিকপুর, সেনবাগ, নোয়াখালী</span><span><HeaderIcon name="phone"/> ০১৭১২–৩৪৫৬৭৮ <i>●</i> <SocialLinks className="topbar-social" size={14}/></span></div></div>
     <header className="nav-wrap site-header"><div className="shell nav-inner">
       <Link href="/" className="brand" aria-label="Rabeya Farm হোম"><Image src="/Home/Logo/RF_Logo.png" alt="রাবেয়া ফার্ম" width={190} height={64} className="brand-logo" style={{ height: "auto" }} preload/></Link>
       <nav aria-label="প্রধান নেভিগেশন">{navigation}</nav>

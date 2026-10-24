@@ -5,7 +5,10 @@ export type Advisor = {
   summary: string;
   image: string;
   tone: "green" | "mint" | "blue" | "gold";
+  active?: boolean;
 };
+
+export const advisorTones: Advisor["tone"][] = ["green", "mint", "blue", "gold"];
 
 // নিচের নাম, প্রতিষ্ঠান ও পদবিগুলো demo data; আসল তথ্য পাওয়া গেলে এগুলো বদলাতে হবে।
 export const advisors: Advisor[] = [

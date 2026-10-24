@@ -1,8 +1,14 @@
+"use client";
+
 import Image from "next/image";
-import { advisors } from "@/data/advisors";
+import { advisors as defaultAdvisors, advisorTones, type Advisor } from "@/data/advisors";
+import { advisorsStorageKey, isLocalImage } from "@/data/homepage";
+import { useStoredList } from "./use-stored-list";
 import styles from "./advisors-showcase.module.css";
 
 export default function AdvisorsShowcase() {
+  const advisors = useStoredList<Advisor>(advisorsStorageKey, defaultAdvisors).filter(advisor => advisor.active !== false);
+  if (!advisors.length) return null;
   return <section className={styles.section} aria-labelledby="advisor-title">
     <div className={`shell ${styles.inner}`}>
       <header className={styles.heading}>
@@ -14,10 +20,10 @@ export default function AdvisorsShowcase() {
       </header>
 
       <div className={styles.journey}>
-        {advisors.map((advisor) => <article className={`${styles.card} ${styles[advisor.tone]}`} key={advisor.id}>
+        {advisors.map((advisor, index) => <article className={`${styles.card} ${styles[advisorTones[index % advisorTones.length]]}`} key={advisor.id}>
           <span className={styles.marker} aria-hidden="true"><i /></span>
           <div className={styles.photo}>
-            <Image src={advisor.image} alt={advisor.name} fill sizes="(max-width: 650px) 100vw, 25vw" />
+            <Image src={advisor.image} alt={advisor.name} fill sizes="(max-width: 650px) 100vw, 25vw" unoptimized={isLocalImage(advisor.image)} />
           </div>
           <div className={styles.copy}>
             <span>{advisor.name}</span>

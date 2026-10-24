@@ -48,7 +48,7 @@ export default async function FullPaymentPage({ params }: PageProps<"/korbani-go
           <section className="payment-card payment-instructions"><h2>গুরুত্বপূর্ণ নির্দেশনা</h2><ul><li>পূর্ণ পরিশোধ নিশ্চিত হওয়ার পরই অর্ডার কনফার্ম হবে।</li><li>টাকা পাঠানোর পর ট্রানজেকশন আইডি ও রসিদ আপলোড করুন।</li><li>তথ্য যাচাইয়ের পর অর্ডারের আপডেট ফোন বা SMS-এ জানানো হবে।</li><li>বুকিং কনফার্ম না হলে গরু ডেলিভারি দেওয়া হবে না।</li></ul></section>
         </aside>
 
-        <section className="payment-main-card"><h1>পেমেন্ট সম্পন্ন করুন</h1><PaymentForm amount={cow.price} cowId={cow.id} paymentType="full"/></section>
+        <section className="payment-main-card"><h1>পেমেন্ট সম্পন্ন করুন</h1><PaymentForm amount={cow.price} cowId={cow.id} unavailable={cow.availability !== "available"} paymentType="full"/></section>
       </div>
 
       <section className="payment-faq"><h2>সচরাচর জিজ্ঞাসা (FAQ)</h2><div>{faqs.map(([question, answer]) => <details key={question}><summary>{question}<span>⌄</span></summary><p>{answer}</p></details>)}</div></section>

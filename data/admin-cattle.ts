@@ -1,61 +1,62 @@
-import { catalogue, colorLabels, type CowColor } from "./cattle";
+import { allCattle, availabilityLabels, colorLabels, type Cow, type CowAvailability, type CowColor } from "./cattle";
 
-export type CowStatus = "available" | "reserved" | "sold" | "draft";
+// Admin edits exactly the public Cow fields; views/inquiries/addedAt are read-only stats.
+export type AdminCow = Cow & { views: number; inquiries: number; addedAt: string };
 
-export type AdminCow = {
-  id: string;
-  name: string;
-  breed: string;
-  weight: number;
-  price: number;
-  purchasePrice: number;
-  color: CowColor;
-  status: CowStatus;
-  age: string;
-  gender: string;
-  origin: string;
-  shed: string;
-  feed: string;
-  health: string;
-  vaccine: string;
-  lastCheckup: string;
-  note: string;
-  image: string;
-  position: string;
-  views: number;
-  inquiries: number;
-  addedAt: string;
-};
-
-const statuses: CowStatus[] = ["available", "available", "reserved", "sold", "available", "draft"];
-
-export const adminCattle: AdminCow[] = catalogue.map((cow, index) => ({
+export const adminCattle: AdminCow[] = allCattle.map((cow, index) => ({
   ...cow,
-  breed: cow.name.includes("শাহিওয়াল") ? "শাহিওয়াল" : cow.name.includes("ব্রাহমা") ? "ব্রাহমা ক্রস" : "দেশি ক্রস",
-  purchasePrice: Math.round(cow.price * 0.71 / 1000) * 1000,
-  status: cow.availability === "sold" ? "sold" : cow.availability === "partial-booked" ? "reserved" : statuses[index % statuses.length],
-  age: `${2 + (index % 3)} বছর ${index % 2 ? "৬ মাস" : ""}`.trim(),
-  gender: "ষাঁড়",
-  origin: index % 2 ? "কুষ্টিয়া" : "নিজস্ব খামার",
-  shed: `শেড ${String.fromCharCode(65 + (index % 3))} · ${String(index + 1).padStart(2, "0")}`,
-  feed: "সবুজ ঘাস, খড় ও সুষম দানাদার খাবার",
-  health: "সুস্থ ও সক্রিয়",
-  vaccine: index % 4 === 3 ? "পরবর্তী ডোজ বাকি" : "সম্পূর্ণ",
-  lastCheckup: `২০২৬-০৯-${String(12 + (index % 14)).padStart(2, "0")}`,
-  note: "নিয়মিত স্বাস্থ্য পরীক্ষা করা হয়। ক্রেতার অনুরোধে লাইভ ভিডিও এবং হালনাগাদ ওজন দেওয়া যাবে।",
   views: 184 + index * 37,
   inquiries: 4 + (index % 7),
   addedAt: `২০২৬-০${7 + (index % 3)}-${String(8 + index).padStart(2, "0")}`,
 }));
 
-export const cowStatusLabels: Record<CowStatus, string> = {
-  available: "বিক্রয়ের জন্য প্রস্তুত",
-  reserved: "রিজার্ভড",
-  sold: "বিক্রি হয়েছে",
-  draft: "ড্রাফট",
-};
+export function nextCowId() {
+  const max = Math.max(...adminCattle.map(cow => Number(cow.id.replace(/\D/g, "")) || 0));
+  return `RB-${max + 1}`;
+}
 
+// A blank form: nothing pre-filled except the id. color/availability start empty and must be chosen.
+export function newAdminCow(id = nextCowId()): AdminCow {
+  return { id, name: "", weight: 0, price: 0, color: "" as CowColor, availability: "" as CowAvailability, image: "", position: "center", age: "", gender: "", health: "", vaccine: "", origin: "", feed: "", gallery: [], videoUrl: "", draft: true, views: 0, inquiries: 0, addedAt: "" };
+}
+
+export const cowStatusLabels = availabilityLabels;
+
+// Admin list/dashboard status: a draft overrides the sale status.
+export type AdminStatus = Cow["availability"] | "draft";
+export const adminStatus = (cow: Cow): AdminStatus => cow.draft ? "draft" : cow.availability;
+export const adminStatusLabels: Record<AdminStatus, string> = { ...availabilityLabels, draft: "ড্রাফট" };
 export { colorLabels };
 
 export const adminCowStorageKey = (id: string) => `rabeya-admin-cow:${id}`;
+export const adminCattleChangeEvent = "rabeya-admin-cattle-change";
 
+export function saveAdminCow(cow: AdminCow) {
+  window.localStorage.setItem(adminCowStorageKey(cow.id), JSON.stringify(cow));
+  window.dispatchEvent(new Event(adminCattleChangeEvent));
+}
+
+const storagePrefix = adminCowStorageKey("");
+
+// Built-in cattle merged with every cow saved from the admin editor (edits + newly added ones).
+export function loadAdminCattle(): AdminCow[] {
+  const saved = new Map<string, AdminCow>();
+  let keys: string[] = [];
+  try { keys = Object.keys(window.localStorage); } catch { return adminCattle; }
+  // One bad/old record must not hide the rest, so each key is parsed on its own.
+  for (const key of keys) {
+    if (!key.startsWith(storagePrefix) || key === adminCowStorageKey("new")) continue;
+    try {
+      const cow = JSON.parse(window.localStorage.getItem(key) ?? "") as AdminCow;
+      if (cow && typeof cow.id === "string" && key === adminCowStorageKey(cow.id)) saved.set(cow.id, cow);
+    } catch {}
+  }
+  const merged = adminCattle.map(cow => saved.has(cow.id) ? { ...cow, ...saved.get(cow.id) } : cow);
+  const added = [...saved.values()].filter(cow => !adminCattle.some(base => base.id === cow.id));
+  return [...merged, ...added.map(cow => ({ ...newAdminCow(), ...cow }))];
+}
+
+export function nextSavedCowId() {
+  const max = Math.max(...loadAdminCattle().map(cow => Number(cow.id.replace(/\D/g, "")) || 0));
+  return `RB-${max + 1}`;
+}

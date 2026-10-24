@@ -5,18 +5,10 @@ import SiteFooter from "@/app/components/site-footer";
 import ReviewsCarousel from "@/app/components/reviews-carousel";
 import PartnersShowcase from "@/app/components/partners-showcase";
 import AdvisorsShowcase from "@/app/components/advisors-showcase";
+import HeroSlider from "@/app/components/hero-slider";
+import FaqList from "@/app/components/faq-list";
+import { bnNumber, featuredCattle } from "@/data/cattle";
 
-const cattle = [
-  { id: "RF–101", name: "সাদা ব্রাহমা", weight: "৬২০ কেজি", price: "২,৯০,০০০", src: "/Home/rabeya-hero-optimized.jpg", position: "82% center" },
-  { id: "RF–102", name: "দেশি লাল", weight: "৫৮০ কেজি", price: "২,৪৫,০০০", src: "/Home/rabeya-cattle-optimized.jpg", position: "12% center" },
-  { id: "RF–103", name: "কালো সাহিওয়াল", weight: "৬৬০ কেজি", price: "৩,১০,০০০", src: "/Home/rabeya-cattle-optimized.jpg", position: "50% center" },
-];
-const faqs = [
-  ["কোরবানির জন্য গরু কীভাবে বুক করব?", "পছন্দের গরুর কোড জানিয়ে ফোন বা WhatsApp-এ যোগাযোগ করুন। আমাদের টিম বুকিং ও পেমেন্টের পুরো প্রক্রিয়াটি বুঝিয়ে দেবে।"],
-  ["গরুর লাইভ ভিডিও দেখা যাবে?", "জি, অনুরোধ করলে নির্ধারিত সময়ে ভিডিও কল বা হালনাগাদ ভিডিওর ব্যবস্থা করা হবে।"],
-  ["ঢাকার বাইরে ডেলিভারি আছে?", "অবশ্যই। দূরত্ব ও পরিবহন সুবিধা অনুযায়ী দেশের বিভিন্ন জেলায় নিরাপদ ডেলিভারি দেওয়া হয়।"],
-  ["গরুর স্বাস্থ্য পরীক্ষা করা হয় কি?", "প্রতিটি গরু নিয়মিত পর্যবেক্ষণে থাকে এবং প্রয়োজন অনুযায়ী ভেটেরিনারি চেকআপ করা হয়।"],
-];
 
 type IconName = "phone" | "pin" | "shield" | "truck" | "leaf" | "arrow" | "play" | "menu";
 function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
@@ -37,7 +29,7 @@ export default function Home() {
     <SiteHeader active="home" />
 
     <section className="hero-section">
-      <Image src="/Home/Homepage/2.jpg" alt="রাবেয়া ফার্মের পরিচ্ছন্ন শেডে বিশ্রামরত গরু" fill priority sizes="100vw" className="hero-image hero-farm-image"/>
+      <HeroSlider/>
       <div className="hero-shade"/>
       <div className="shell hero-content">
         <div className="hero-copy-block"><p className="kicker"><span/> বিশ্বস্ততার খামার, আপনার পরিবারের জন্য</p><h1>হাটে না ঘেঁটে,<br/><em>গরু কিনুন নেটে</em></h1><p className="hero-copy">নিজস্ব খামারে প্রাকৃতিক খাবার ও নিয়মিত যত্নে বেড়ে ওঠা সুস্থ গরু। নিশ্চিন্তে পছন্দ করুন, দায়িত্ব আমাদের।</p><div className="hero-actions"><Link href="/korbani-goru" className="button button-dark">গরু দেখুন <Icon name="arrow"/></Link><Link href="tel:01712345678" className="button button-white"><Icon name="phone"/> কথা বলুন</Link></div></div>
@@ -45,17 +37,17 @@ export default function Home() {
       </div>
     </section>
 
-    <section id="cattle" className="section shell"><div className="section-heading"><div><p className="eyebrow"><Icon name="leaf"/> আমাদের সংগ্রহ</p><h2>আপনার পছন্দের গরুটি বেছে নিন</h2></div><Link href="/korbani-goru" className="text-link">সব গরু দেখুন <Icon name="arrow"/></Link></div><div className="cattle-grid">{cattle.map((cow,index)=><article className="cow-card" key={cow.id}><div className="cow-photo"><Image src={cow.src} alt={cow.name} fill sizes="(max-width: 700px) 100vw, 33vw" style={{objectPosition:cow.position}}/><span>{index===0?"নতুন":"পছন্দের"}</span></div><div className="cow-info"><div><p>{cow.id}</p><h3>{cow.name}</h3></div><dl><div><dt>ওজন</dt><dd>{cow.weight}</dd></div><div><dt>মূল্য</dt><dd>৳ {cow.price}</dd></div></dl><Link href={`/korbani-goru/RB-${101 + index}`} className="card-link">বিস্তারিত দেখুন <Icon name="arrow" size={17}/></Link></div></article>)}</div></section>
+    <section id="cattle" className="section shell"><div className="section-heading"><div><p className="eyebrow"><Icon name="leaf"/> আমাদের সংগ্রহ</p><h2>আপনার পছন্দের গরুটি বেছে নিন</h2></div><Link href="/korbani-goru" className="text-link">সব গরু দেখুন <Icon name="arrow"/></Link></div><div className="cattle-grid">{featuredCattle.map((cow,index)=><article className="cow-card" key={cow.id}><div className="cow-photo"><Image src={cow.image} alt={cow.name} fill sizes="(max-width: 640px) 100vw, (max-width: 900px) 50vw, 25vw" style={{objectPosition:cow.position}}/><span>{index===0?"নতুন":"পছন্দের"}</span></div><div className="cow-info"><div><p>{cow.id}</p><h3>{cow.name}</h3></div><dl><div><dt>ওজন</dt><dd>{bnNumber(cow.weight)} কেজি</dd></div><div><dt>মূল্য</dt><dd>৳ {bnNumber(cow.price)}</dd></div></dl><Link href={`/korbani-goru/${cow.id}`} className="card-link">বিস্তারিত দেখুন <Icon name="arrow" size={17}/></Link></div></article>)}</div></section>
 
     <section id="about" className="story-section delivery-story"><div className="shell story-grid"><div className="story-copy"><p className="eyebrow light"><Icon name="truck"/> নিজস্ব গাড়িতে হোম ডেলিভারি</p><h2>অনলাইনে অর্ডার করুন,<br/>গরু পৌঁছে যাবে বাড়িতে</h2><p>হাটের ভিড় ও যাতায়াতের ঝামেলা ছাড়াই ঘরে বসে পছন্দের গরু অর্ডার করুন। আমাদের প্রশিক্ষিত কর্মী নিজস্ব গাড়িতে নিরাপদভাবে আপনার দেওয়া ঠিকানায় গরু পৌঁছে দেবেন।</p><div className="delivery-points"><span>✓ যত্নশীল পরিবহন</span><span>✓ নির্ধারিত সময়ে পৌঁছানো</span></div><Link href="/korbani-goru" className="button button-lime">পছন্দের গরু দেখুন <Icon name="arrow"/></Link></div><div className="story-visual delivery-visual"><Image src="/Home/rabeya-home-delivery-optimized.jpg" alt="রাবেয়া ফার্মের নিজস্ব গাড়িতে গ্রাহকের বাড়িতে গরু ডেলিভারি" fill sizes="(max-width: 900px) 100vw, 56vw"/><div className="story-badge delivery-badge"><span className="delivery-badge-icon"><Icon name="truck" size={24}/></span><span><b>নিজস্ব গাড়ি</b>সরাসরি আপনার বাড়িতে</span></div></div></div></section>
 
     <section className="features shell"><article><span><Icon name="leaf" size={28}/></span><div><h3>প্রাকৃতিক খাবার</h3><p>নিজস্ব তত্ত্বাবধানে ঘাস ও সুষম খাবার</p></div></article><article><span><Icon name="shield" size={28}/></span><div><h3>স্বাস্থ্য ও নিরাপত্তা</h3><p>নিয়মিত পর্যবেক্ষণ ও পরিচ্ছন্ন পরিবেশ</p></div></article><article><span><Icon name="truck" size={29}/></span><div><h3>নিরাপদ ডেলিভারি</h3><p>সময়মতো আপনার ঠিকানায় পৌঁছে দেওয়া</p></div></article></section>
 
-    <section className="reviews-section"><div className="shell reviews-heading"><div className="center-heading"><p className="eyebrow"><Icon name="leaf"/> ক্রেতাদের ভালোবাসা</p><h2>আমাদের ক্রেতারা যা বলেন</h2><span>বাস্তব অভিজ্ঞতা, বিশ্বাসের সম্পর্ক</span></div></div><ReviewsCarousel/></section>
+    <section id="reviews" className="reviews-section"><div className="shell reviews-heading"><div className="center-heading"><p className="eyebrow"><Icon name="leaf"/> ক্রেতাদের ভালোবাসা</p><h2>আমাদের ক্রেতারা যা বলেন</h2><span>বাস্তব অভিজ্ঞতা, বিশ্বাসের সম্পর্ক</span></div></div><ReviewsCarousel/></section>
 
     <PartnersShowcase/>
 
-    <section id="faq" className="faq-section shell"><div className="faq-intro"><p className="eyebrow"><Icon name="leaf"/> সাধারণ জিজ্ঞাসা</p><h2>কিছু জানতে<br/>চান?</h2><p>আরও কোনো প্রশ্ন থাকলে আমাদের টিমের সঙ্গে সরাসরি কথা বলুন।</p><Link href="tel:01712345678" className="text-link"><Icon name="phone"/> ০১৭১২–৩৪৫৬৭৮</Link></div><div className="faq-list">{faqs.map((faq,index)=><details key={faq[0]} open={index===0}><summary>{faq[0]}<span>+</span></summary><p>{faq[1]}</p></details>)}</div></section>
+    <section id="faq" className="faq-section shell"><div className="faq-intro"><p className="eyebrow"><Icon name="leaf"/> সাধারণ জিজ্ঞাসা</p><h2>কিছু জানতে<br/>চান?</h2><p>আরও কোনো প্রশ্ন থাকলে আমাদের টিমের সঙ্গে সরাসরি কথা বলুন।</p><Link href="tel:01712345678" className="text-link"><Icon name="phone"/> ০১৭১২–৩৪৫৬৭৮</Link></div><div className="faq-home-list"><FaqList homepage/><Link href="/faq" className="text-link faq-all-link">সব প্রশ্ন ও উত্তর দেখুন <Icon name="arrow"/></Link></div></section>
 
     <AdvisorsShowcase />
 

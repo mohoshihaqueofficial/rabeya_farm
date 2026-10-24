@@ -121,3 +121,19 @@ export const activeBlogPosts = blogPosts
 export function getBlogPost(slug: string) {
   return activeBlogPosts.find(post => post.slug === slug);
 }
+
+export const blogCategories = Array.from(new Set(blogPosts.map(post => post.category)));
+export const blogStorageKey = "rabeya-farm:blogs";
+
+// "2026-09-25" → "২৫ সেপ্টেম্বর ২০২৬" (same style as the hand-written labels above).
+export function blogDateLabel(isoDate: string) {
+  const date = new Date(`${isoDate}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat("bn-BD", { day: "numeric", month: "long", year: "numeric" }).format(date).replace(",", "");
+}
+
+// Roughly 180 Bangla words per minute; at least 1 minute.
+export function blogReadTime(content: BlogSection[]) {
+  const words = content.flatMap(section => [section.heading, ...section.paragraphs]).join(" ").split(/\s+/).filter(Boolean).length;
+  return `${new Intl.NumberFormat("bn-BD").format(Math.max(1, Math.round(words / 180)))} মিনিট পড়ুন`;
+}
