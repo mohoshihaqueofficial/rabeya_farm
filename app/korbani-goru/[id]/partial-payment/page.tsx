@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { liveAvailability } from "@/lib/orders";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -33,6 +34,7 @@ export default async function PartialPaymentPage({ params }: PageProps<"/korbani
   const { id } = await params;
   const cow = catalogue.find(item => item.id === id);
   if (!cow) notFound();
+  const availability = await liveAvailability(cow); // includes customer orders
 
   return <main className="partial-payment-page">
     <SiteHeader active="cattle"/>
@@ -52,7 +54,7 @@ export default async function PartialPaymentPage({ params }: PageProps<"/korbani
           <section className="payment-card payment-instructions"><h2>গুরুত্বপূর্ণ নির্দেশনা</h2><ul><li>উপরে উল্লেখিত ব্যাংক একাউন্টে টাকা পাঠান।</li><li>টাকা পাঠানোর পর ট্রানজেকশন আইডি ও রসিদ আপলোড করুন।</li><li>তথ্য যাচাইয়ের পর বুকিং নিশ্চিত করে SMS পাঠানো হবে।</li><li>বুকিং কনফার্ম না হলে গরুটি রিজার্ভ হবে না।</li></ul></section>
         </aside>
 
-        <section className="payment-main-card"><h1>পেমেন্ট সম্পন্ন করুন</h1><PaymentForm amount={bookingAmount} cowId={cow.id} unavailable={cow.availability !== "available"}/></section>
+        <section className="payment-main-card"><h1>পেমেন্ট সম্পন্ন করুন</h1><PaymentForm amount={bookingAmount} cowId={cow.id} unavailable={availability !== "available"}/></section>
       </div>
 
       <section className="payment-faq"><h2>সচরাচর জিজ্ঞাসা (FAQ)</h2><div>{faqs.map(([question, answer]) => <details key={question}><summary>{question}<span>⌄</span></summary><p>{answer}</p></details>)}</div></section>

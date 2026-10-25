@@ -12,7 +12,7 @@ addresses), so these items are **requirements**, not suggestions.
 | # | Risk | Severity | Fix in |
 |---|---|---|---|
 | 1 | ~~`/admin` has no login~~ — **fixed**: username + password login (`/admin-login`), signed HttpOnly session cookie with a **30-minute idle timeout** (warning at 28 min, `app/admin/components/idle-logout.tsx`), `proxy.ts` + server check in `app/admin/layout.tsx`, owner/editor roles, users managed at `/admin/users` | — | done |
-| 2 | Payment & OTP forms are demos; nothing is verified server-side | High before launch | Phase 3–4 |
+| 2 | **Orders are now saved on the server** (`.data/orders.json`, receipts in `.data/receipts/` served only to admins) with server-side validation, real image check, server-computed amount, one open order per cow and a per-IP limit. Still missing: online payment gateway, SMS confirmation, OTP login (demo) | Medium | Phase 3–4 |
 | 3 | Admin content still in `localStorage` (readable by any script on the origin) | Medium | Phase 2 |
 | 4 | ~~No security headers~~ — **fixed** in `next.config.ts` (CSP, HSTS in production, X-Frame-Options, nosniff, Referrer/Permissions-Policy); `X-Powered-By` removed; `robots.ts` disallows `/admin` | — | done |
 | 5 | Uploaded images accepted as base64 with only a client-side type/size check | Medium | Phase 2 |

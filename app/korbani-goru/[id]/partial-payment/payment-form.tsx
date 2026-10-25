@@ -4,10 +4,13 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { bnNumber } from "@/data/cattle";
 import { markCowBooked, useIsCowBooked } from "../../booked-cows";
+import { submitOrder } from "../../order-actions";
 
 export default function PaymentForm({ amount, cowId, paymentType = "partial", unavailable = false }: { amount: number; cowId: string; paymentType?: "partial" | "full"; unavailable?: boolean }) {
   const [fileError, setFileError] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [formError, setFormError] = useState("");
   const [orderId, setOrderId] = useState("");
   const [copied, setCopied] = useState(false);
   const [customerAddress, setCustomerAddress] = useState("");
@@ -18,7 +21,7 @@ export default function PaymentForm({ amount, cowId, paymentType = "partial", un
   const isFullPayment = paymentType === "full";
   const paymentLabel = isFullPayment ? "পূর্ণ পেমেন্ট" : "আংশিক বুকিং";
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const receipt = form.elements.namedItem("receipt") as HTMLInputElement;
@@ -52,9 +55,18 @@ export default function PaymentForm({ amount, cowId, paymentType = "partial", un
     }
 
     setFileError("");
-    const datePart = new Date().toISOString().slice(2, 10).replaceAll("-", "");
-    const randomPart = Math.random().toString(36).slice(2, 7).toUpperCase();
-    setOrderId(`RF-${isFullPayment ? "F" : "P"}-${datePart}-${randomPart}`);
+    setFormError("");
+    setSending(true);
+    const result = await submitOrder(new FormData(form)).catch(() => null);
+    setSending(false);
+    if (!result || !result.ok) {
+      const message = result?.message ?? "অর্ডার জমা দেওয়া যায়নি। আবার চেষ্টা করুন অথবা ফোন করুন।";
+      if (result?.field === "receipt") setFileError(message); else setFormError(message);
+      const field = result?.field ? form.elements.namedItem(result.field) : null;
+      if (field instanceof HTMLElement) field.focus();
+      return;
+    }
+    setOrderId(result.orderId);
     setCopied(false);
     setSubmitted(true);
     markCowBooked(cowId);
@@ -65,8 +77,9 @@ export default function PaymentForm({ amount, cowId, paymentType = "partial", un
     setCopied(true);
   }
 
-  // Once a payment is in, the cow can't be booked again; keep the success modal visible until closed.
-  if (unavailable || (bookedHere && !submitted)) return <div className="payment-closed" role="status">
+  // Once a payment is in, the cow can't be booked again. The page refreshes after a successful order
+  // (the cow becomes "booked"), so the success modal must win over `unavailable` until it is closed.
+  if (!submitted && (unavailable || bookedHere)) return <div className="payment-closed" role="status">
     <span aria-hidden="true">!</span>
     <h2>এই গরুটি আর বুকিংয়ের জন্য উপলব্ধ নয়</h2>
     <p><strong>{cowId}</strong> গরুটির পেমেন্ট ইতোমধ্যে সম্পন্ন হয়েছে। অন্য একটি গরু বেছে নিন।</p>
@@ -82,9 +95,9 @@ export default function PaymentForm({ amount, cowId, paymentType = "partial", un
         <button className="payment-modal-close" type="button" aria-label="পপআপ বন্ধ করুন" onClick={() => setSubmitted(false)}>×</button>
         <span className="payment-modal-icon" aria-hidden="true">✓</span>
         <h2 id="payment-success-title">অর্ডার সফলভাবে জমা হয়েছে</h2>
-        <p><strong>{cowId}</strong> গরুর {paymentLabel} তথ্য গ্রহণের ডেমো সম্পন্ন হয়েছে।</p>
+        <p><strong>{cowId}</strong> গরুর {paymentLabel} তথ্য আমরা পেয়েছি। পেমেন্ট যাচাই করে আমাদের টিম শীঘ্রই আপনাকে ফোন করবে।</p>
         <div className="payment-order-id"><span>আপনার Order ID</span><strong>{orderId}</strong><button type="button" onClick={copyOrderId}>{copied ? "কপি হয়েছে ✓" : "Order ID কপি করুন"}</button></div>
-        <small>এটি একটি demo submission—কোনো টাকা কাটা বা তথ্য সংরক্ষণ করা হয়নি।</small>
+        <small>Order ID সংরক্ষণ করে রাখুন—যোগাযোগের সময় এটি লাগবে।</small>
         <button className="payment-modal-action" type="button" onClick={() => setSubmitted(false)}>ঠিক আছে</button>
       </section>
     </div>}
@@ -95,14 +108,14 @@ export default function PaymentForm({ amount, cowId, paymentType = "partial", un
       <legend><span>১</span> গ্রাহকের তথ্য</legend>
       <label>গ্রাহকের নাম <em>*</em><input required name="customerName" type="text" placeholder="আপনার নাম লিখুন" autoComplete="name"/></label>
       <label>গ্রাহকের ঠিকানা <em>*</em><textarea required name="customerAddress" placeholder="আপনার পূর্ণ ঠিকানা লিখুন" rows={3} autoComplete="street-address" value={customerAddress} onChange={event => { const address = event.target.value; setCustomerAddress(address); if (sameAddress) setDeliveryAddress(address); }}/></label>
-      <label>মোবাইল নম্বর <em>*</em><input required name="customerPhone" type="tel" inputMode="tel" placeholder="01XXXXXXXXX" pattern="01[3-9][0-9]{8}" autoComplete="tel" value={customerPhone} onChange={event => setCustomerPhone(event.target.value)}/></label>
+      <label>মোবাইল নম্বর <em>*</em><input required name="customerPhone" type="tel" inputMode="tel" placeholder="01XXXXXXXXX" pattern="(01|০১)[3-9৩-৯][0-9০-৯]{8}" title="১১ সংখ্যার মোবাইল নম্বর, যেমন 01712345678" autoComplete="tel" value={customerPhone} onChange={event => setCustomerPhone(event.target.value)}/></label>
     </fieldset>
 
     <fieldset className="payment-step">
       <legend><span>২</span> গরু ডেলিভারি দেওয়ার ঠিকানা</legend>
       <label className="same-address-control"><input type="checkbox" checked={sameAddress} onChange={event => { const checked = event.target.checked; setSameAddress(checked); if (checked) setDeliveryAddress(customerAddress); }}/> গ্রাহকের ঠিকানাই ডেলিভারি ঠিকানা</label>
       <label>ডেলিভারি ঠিকানা <em>*</em><textarea required name="deliveryAddress" placeholder="গরু ডেলিভারি দেওয়ার সম্পূর্ণ ঠিকানা লিখুন" rows={3} value={deliveryAddress} readOnly={sameAddress} onChange={event => setDeliveryAddress(event.target.value)}/></label>
-      <label>মোবাইল নম্বর <em>*</em><input required name="deliveryPhone" type="tel" inputMode="tel" placeholder="01XXXXXXXXX" pattern="01[3-9][0-9]{8}"/></label>
+      <label>মোবাইল নম্বর <em>*</em><input required name="deliveryPhone" type="tel" inputMode="tel" placeholder="01XXXXXXXXX" pattern="(01|০১)[3-9৩-৯][0-9০-৯]{8}" title="১১ সংখ্যার মোবাইল নম্বর, যেমন 01712345678"/></label>
     </fieldset>
 
     <fieldset className="payment-step payment-details-step">
@@ -115,7 +128,8 @@ export default function PaymentForm({ amount, cowId, paymentType = "partial", un
       <label className="receipt-field">পেমেন্টের রসিদ {isFullPayment ? "(ঐচ্ছিক)" : "(আবশ্যক)"} {!isFullPayment && <em>*</em>}<input required={!isFullPayment} name="receipt" type="file" accept="image/jpeg,image/png,image/webp" onChange={() => setFileError("")}/><small>JPG, PNG বা WEBP ফাইল (সর্বোচ্চ ৫MB)</small></label>
       {fileError && <p className="file-error" role="alert">{fileError}</p>}
       <label className="payment-consent"><input required name="consent" type="checkbox"/> আমি নিশ্চিত যে, আমি উপরে দেওয়া তথ্য সঠিকভাবে প্রদান করেছি।</label>
-      <button className="payment-submit" type="submit" disabled={submitted}>{isFullPayment ? "পেমেন্ট সম্পন্ন করুন" : "পেমেন্টের তথ্য জমা দিন"}</button>
+      {formError && <p className="file-error" role="alert">{formError}</p>}
+      <button className="payment-submit" type="submit" disabled={submitted || sending}>{sending ? "জমা দেওয়া হচ্ছে…" : isFullPayment ? "পেমেন্ট সম্পন্ন করুন" : "পেমেন্টের তথ্য জমা দিন"}</button>
     </fieldset>
   </form>;
 }

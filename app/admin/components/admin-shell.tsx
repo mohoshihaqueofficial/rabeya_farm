@@ -12,6 +12,7 @@ import IdleLogout from "./idle-logout";
 const mainItems = [
   { href: "/admin", label: "ড্যাশবোর্ড", icon: "grid" as const },
   { href: "/admin/cows", label: "গরুর তালিকা", icon: "cow" as const, badge: "১২" },
+  { href: "/admin/orders", label: "অর্ডার", icon: "cart" as const },
   { href: "/admin/blogs", label: "ব্লগ", icon: "edit" as const },
 ];
 // হোমপেজ group: everything editable on the public homepage.
@@ -22,15 +23,9 @@ const homepageItems = [
   { href: "/admin/homepage/advisors", label: "Advisor Panel", icon: "shield" as const },
   { href: "/admin/homepage/faq", label: "FAQ · জিজ্ঞাসা", icon: "chart" as const },
 ];
-const soonItems = [
-  { label: "অর্ডার", icon: "cart" as const, badge: "৮" },
-  { label: "ক্রেতা", icon: "users" as const },
-  { label: "রিপোর্ট", icon: "chart" as const },
-];
-
 export type ShellAdmin = { name: string; username: string; role: "owner" | "editor" };
 
-export default function AdminShell({ children, admin }: { children: React.ReactNode; admin: ShellAdmin }) {
+export default function AdminShell({ children, admin, pendingOrders = 0 }: { children: React.ReactNode; admin: ShellAdmin; pendingOrders?: number }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const homepageActive = homepageItems.some(item => pathname.startsWith(item.href));
@@ -45,11 +40,9 @@ export default function AdminShell({ children, admin }: { children: React.ReactN
       <div className="admin-workspace"><span>RF</span><div><b>রাবেয়া ফার্ম</b><small>অ্যাডমিন ওয়ার্কস্পেস</small></div><Icon name="chevron" size={15}/></div>
       <nav className="admin-nav" aria-label="অ্যাডমিন নেভিগেশন">
         <p>ম্যানেজমেন্ট</p>
-        {mainItems.map(item => { const active = item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href); return <Link key={item.href} href={item.href} className={active ? "active" : ""} onClick={() => setOpen(false)}><Icon name={item.icon}/><span>{item.label}</span>{item.badge && <b>{item.badge}</b>}</Link>; })}
+        {mainItems.map(item => { const active = item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href); return <Link key={item.href} href={item.href} className={active ? "active" : ""} onClick={() => setOpen(false)}><Icon name={item.icon}/><span>{item.label}</span>{item.href === "/admin/orders" ? pendingOrders > 0 && <b className="pending-badge" title="যাচাই বাকি">{new Intl.NumberFormat("bn-BD").format(pendingOrders)}</b> : item.badge && <b>{item.badge}</b>}</Link>; })}
         <button type="button" className={`nav-group ${homepageActive ? "active" : ""} ${homepageOpen ? "is-open" : ""}`} aria-expanded={homepageOpen} aria-controls="homepage-nav" onClick={() => setHomepageOpen(!homepageOpen)}><Icon name="home"/><span>হোমপেজ</span><Icon name="chevron" size={14}/></button>
         {homepageOpen && <div id="homepage-nav" className="nav-subitems">{homepageItems.map(item => <Link key={item.href} href={item.href} className={pathname.startsWith(item.href) ? "active" : ""} aria-current={pathname.startsWith(item.href) ? "page" : undefined} onClick={() => setOpen(false)}><span>{item.label}</span></Link>)}</div>}
-        <p>শীঘ্রই</p>
-        {soonItems.map(item => <button key={item.label} type="button" title="শীঘ্রই আসছে"><Icon name={item.icon}/><span>{item.label}</span>{item.badge && <b>{item.badge}</b>}<small>শীঘ্রই</small></button>)}
         <p>সিস্টেম</p>
         {admin.role === "owner" && <Link href="/admin/users" className={pathname.startsWith("/admin/users") ? "active" : ""} onClick={() => setOpen(false)}><Icon name="users"/><span>ইউজার</span></Link>}
         <button type="button" title="শীঘ্রই আসছে"><Icon name="settings"/><span>সেটিংস</span><small>শীঘ্রই</small></button>

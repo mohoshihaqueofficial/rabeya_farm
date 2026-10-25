@@ -77,3 +77,15 @@ body{font-family:var(--font-hind-siliguri),"Nirmala UI",Arial,sans-serif}
 .footer-social{gap:9px;margin:6px 0 4px}
 .footer-social a{width:36px;height:36px;background:#ffffff14;color:#d6eadc;line-height:1!important}
 .footer-social a:hover{background:#fff;color:var(--green2)}
+
+/* Floating Messenger chat button (bottom-right); the scroll-to-top button sits above it. */
+.messenger-button{position:fixed;right:24px;bottom:24px;z-index:81;display:flex;align-items:center;gap:0;height:56px;min-width:56px;padding:0 14px;border-radius:999px;background:linear-gradient(135deg,#00b2ff,#006aff 55%,#a033ff);color:#fff;text-decoration:none;box-shadow:0 10px 28px #0050c855;transition:transform .2s ease,box-shadow .2s ease,gap .25s ease,padding .25s ease}
+.messenger-button svg{flex:0 0 auto}
+.messenger-label{max-width:0;overflow:hidden;white-space:nowrap;font-size:14px;font-weight:700;transition:max-width .3s ease}
+.messenger-button:hover,.messenger-button:focus-visible{transform:translateY(-3px);box-shadow:0 14px 34px #0050c870;gap:8px;padding:0 18px 0 14px}
+.messenger-button:hover .messenger-label,.messenger-button:focus-visible .messenger-label{max-width:120px}
+.messenger-button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.scroll-to-top{bottom:92px}
+@media (max-width:640px){.messenger-button{right:15px;bottom:16px;height:52px;min-width:52px;padding:0 12px}.scroll-to-top{bottom:80px}}
+@media (prefers-reduced-motion:reduce){.messenger-button,.messenger-label{transition:none}}
+@media print{.messenger-button{display:none}}

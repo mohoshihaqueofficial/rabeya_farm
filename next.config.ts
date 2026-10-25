@@ -40,6 +40,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Payment receipts (≤ 5 MB) are uploaded through a Server Action; default limit is 1 MB.
+  experimental: { serverActions: { bodySizeLimit: "6mb" } },
   images: {
     formats: ["image/webp"],
     minimumCacheTTL: 604800,
