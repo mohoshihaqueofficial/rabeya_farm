@@ -6,7 +6,7 @@ import { useStoredList } from "./use-stored-list";
 
 // homepage: the short list on the homepage; otherwise every active FAQ with a search box (/faq).
 export default function FaqList({ homepage = false }: { homepage?: boolean }) {
-  const all = useStoredList<Faq>(faqStorageKey, defaultFaqs).filter(faq => faq.active);
+  const all = useStoredList<Faq>(faqStorageKey, defaultFaqs).filter(faq => faq.active && typeof faq.question === "string" && typeof faq.answer === "string");
   const [query, setQuery] = useState("");
   const items = homepage
     ? all.filter(faq => faq.homepage).slice(0, maxHomepageFaqs)

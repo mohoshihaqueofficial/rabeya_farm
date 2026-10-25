@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Icon } from "./icons";
 import LanguageToggle from "@/app/components/language-toggle";
+import { logoutAdmin } from "@/app/admin-login/actions";
+import IdleLogout from "./idle-logout";
 
 const mainItems = [
   { href: "/admin", label: "ড্যাশবোর্ড", icon: "grid" as const },
@@ -26,7 +28,9 @@ const soonItems = [
   { label: "রিপোর্ট", icon: "chart" as const },
 ];
 
-export default function AdminShell({ children }: { children: React.ReactNode }) {
+export type ShellAdmin = { name: string; username: string; role: "owner" | "editor" };
+
+export default function AdminShell({ children, admin }: { children: React.ReactNode; admin: ShellAdmin }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const homepageActive = homepageItems.some(item => pathname.startsWith(item.href));
@@ -47,6 +51,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         <p>শীঘ্রই</p>
         {soonItems.map(item => <button key={item.label} type="button" title="শীঘ্রই আসছে"><Icon name={item.icon}/><span>{item.label}</span>{item.badge && <b>{item.badge}</b>}<small>শীঘ্রই</small></button>)}
         <p>সিস্টেম</p>
+        {admin.role === "owner" && <Link href="/admin/users" className={pathname.startsWith("/admin/users") ? "active" : ""} onClick={() => setOpen(false)}><Icon name="users"/><span>ইউজার</span></Link>}
         <button type="button" title="শীঘ্রই আসছে"><Icon name="settings"/><span>সেটিংস</span><small>শীঘ্রই</small></button>
       </nav>
       <div className="admin-help"><span><Icon name="shield"/></span><b>সাহায্য প্রয়োজন?</b><p>অ্যাডমিন গাইড ও সাপোর্ট দেখুন</p><button>সাপোর্ট সেন্টার</button></div>
@@ -56,10 +61,11 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       <header className="admin-topbar">
         <button className="admin-menu-button" onClick={() => setOpen(true)} aria-label="মেনু খুলুন"><Icon name="menu"/></button>
         <label className="topbar-search"><Icon name="search"/><input type="search" placeholder="গরু, অর্ডার বা ক্রেতা খুঁজুন..."/><kbd>⌘ K</kbd></label>
-        <div className="topbar-actions"><LanguageToggle compact/><button aria-label="নোটিফিকেশন"><Icon name="bell"/><i>3</i></button><span className="topbar-line"/><div className="admin-user"><span>RA</span><div><b>রাবেয়া অ্যাডমিন</b><small>Super Admin</small></div><Icon name="chevron" size={14}/></div></div>
+        <div className="topbar-actions"><LanguageToggle compact/><button aria-label="নোটিফিকেশন"><Icon name="bell"/><i>3</i></button><span className="topbar-line"/><div className="admin-user"><span>{Array.from(admin.name || admin.username)[0]?.toUpperCase()}</span><div><b>{admin.name}</b><small>@{admin.username} · {admin.role === "owner" ? "Owner" : "Editor"}</small></div><Icon name="chevron" size={14}/></div><form action={logoutAdmin}><button type="submit" className="admin-logout" title="লগআউট"><Icon name="logout"/><span>লগআউট</span></button></form></div>
       </header>
       {children}
     </div>
+    <IdleLogout/>
   </div>;
 }
 

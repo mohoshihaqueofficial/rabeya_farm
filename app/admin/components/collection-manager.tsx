@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { readStoredList } from "@/app/components/use-stored-list";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "./icons";
@@ -35,7 +36,7 @@ export default function CollectionManager<T extends CollectionItem>({ title, des
   const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => { try { const saved = window.localStorage.getItem(storageKey); if (saved) setItems(JSON.parse(saved)); } catch {} }, 0);
+    const timer = window.setTimeout(() => { const saved = readStoredList<T>(storageKey); if (saved) setItems(saved); }, 0);
     return () => window.clearTimeout(timer);
   }, [storageKey]);
   useEffect(() => {

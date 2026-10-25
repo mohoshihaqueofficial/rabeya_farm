@@ -10,6 +10,8 @@ import "./payment.css";
 
 const bookingAmount = 20000;
 
+// Unpublished, draft or unknown IDs get a real 404 (not a streamed 200).
+export const dynamicParams = false;
 export function generateStaticParams() { return catalogue.map(cow => ({ id: cow.id })); }
 
 export async function generateMetadata({ params }: PageProps<"/korbani-goru/[id]/partial-payment">): Promise<Metadata> {

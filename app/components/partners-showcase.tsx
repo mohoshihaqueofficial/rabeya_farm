@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { readStoredList } from "./use-stored-list";
 import { useEffect, useState } from "react";
 import { activePartners, partnerStorageKey, type Partner } from "@/data/partners";
 
@@ -10,13 +11,9 @@ export default function PartnersShowcase() {
   const [rotation, setRotation] = useState<{ current: number; previous: number | null }>({ current: 0, previous: null });
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(partnerStorageKey);
-    if (!saved) return;
     const timer = window.setTimeout(() => {
-      try {
-        const parsed = JSON.parse(saved) as Partner[];
-        setItems(parsed.filter(item => item.active).sort((a, b) => a.sortOrder - b.sortOrder));
-      } catch {}
+      const saved = readStoredList<Partner>(partnerStorageKey);
+      if (saved) setItems(saved.filter(item => item.active && typeof item.agreementPhoto === "string").sort((a, b) => a.sortOrder - b.sortOrder));
     }, 0);
     return () => window.clearTimeout(timer);
   }, []);

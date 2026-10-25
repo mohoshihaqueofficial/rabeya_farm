@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { readStoredList } from "@/app/components/use-stored-list";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { partnerStorageKey, partners as initialPartners, type Partner } from "@/data/partners";
@@ -16,9 +17,7 @@ export default function AdminPartnersPage() {
   const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(partnerStorageKey);
-    if (!saved) return;
-    const timer = window.setTimeout(() => { try { setItems(JSON.parse(saved)); } catch {} }, 0);
+    const timer = window.setTimeout(() => { const list = readStoredList<Partner>(partnerStorageKey); if (list) setItems(list); }, 0);
     return () => window.clearTimeout(timer);
   }, []);
 

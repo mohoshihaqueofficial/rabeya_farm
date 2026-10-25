@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { readStoredList } from "@/app/components/use-stored-list";
 import { useEffect, useState } from "react";
 import { faqs as defaultFaqs, faqStorageKey, maxHomepageFaqs, type Faq } from "@/data/faqs";
 import { Icon } from "../../components/icons";
@@ -17,7 +18,7 @@ export default function AdminFaqPage() {
   const { toast, notify, close } = useToast();
 
   useEffect(() => {
-    const timer = window.setTimeout(() => { try { const saved = window.localStorage.getItem(faqStorageKey); if (saved) setItems(JSON.parse(saved)); } catch {} }, 0);
+    const timer = window.setTimeout(() => { const saved = readStoredList<Faq>(faqStorageKey); if (saved) setItems(saved); }, 0);
     return () => window.clearTimeout(timer);
   }, []);
 

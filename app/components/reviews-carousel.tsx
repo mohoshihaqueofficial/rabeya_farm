@@ -9,7 +9,7 @@ import { useStoredList } from "./use-stored-list";
 const initial = (name: string) => Array.from(name.replace(/^(মোঃ|মো\.|মোছাঃ)\s*/, "").trim())[0] ?? "";
 
 export default function ReviewsCarousel() {
-  const reviews = useStoredList<Review>(reviewsStorageKey, defaultReviews).filter(review => review.active);
+  const reviews = useStoredList<Review>(reviewsStorageKey, defaultReviews).filter(review => review.active && typeof review.image === "string" && review.image !== "" && typeof review.name === "string");
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
 

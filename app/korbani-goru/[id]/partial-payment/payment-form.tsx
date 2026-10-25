@@ -24,8 +24,24 @@ export default function PaymentForm({ amount, cowId, paymentType = "partial", un
     const receipt = form.elements.namedItem("receipt") as HTMLInputElement;
     const file = receipt.files?.[0];
 
+    // `required` accepts text made only of spaces; reject it here.
+    const blank = ["customerName", "customerAddress", "deliveryAddress", "transactionId"].find(name => !String(new FormData(form).get(name) ?? "").trim());
+    if (blank) {
+      const field = form.elements.namedItem(blank) as HTMLInputElement;
+      field.setCustomValidity("এই ঘরটি পূরণ করুন");
+      field.reportValidity();
+      field.addEventListener("input", () => field.setCustomValidity(""), { once: true });
+      setSubmitted(false);
+      return;
+    }
     if (!file && !isFullPayment) {
       setFileError("পেমেন্টের রসিদ বা স্ক্রিনশট আপলোড করুন।");
+      setSubmitted(false);
+      return;
+    }
+    // `accept` only filters the file picker; check the real type too.
+    if (file && !["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setFileError("শুধু JPG, PNG বা WebP ছবি আপলোড করুন।");
       setSubmitted(false);
       return;
     }

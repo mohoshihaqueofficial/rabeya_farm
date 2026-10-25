@@ -7,7 +7,7 @@ import { useStoredList } from "./use-stored-list";
 import styles from "./advisors-showcase.module.css";
 
 export default function AdvisorsShowcase() {
-  const advisors = useStoredList<Advisor>(advisorsStorageKey, defaultAdvisors).filter(advisor => advisor.active !== false);
+  const advisors = useStoredList<Advisor>(advisorsStorageKey, defaultAdvisors).filter(advisor => advisor.active !== false && typeof advisor.image === "string" && advisor.image !== "" && typeof advisor.name === "string");
   if (!advisors.length) return null;
   return <section className={styles.section} aria-labelledby="advisor-title">
     <div className={`shell ${styles.inner}`}>

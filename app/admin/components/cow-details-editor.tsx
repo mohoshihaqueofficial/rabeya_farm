@@ -21,6 +21,8 @@ export default function CowDetailsEditor({ id }: { id: string }) {
   const router = useRouter();
   const baseCow = useMemo(() => (isNew ? undefined : adminCattle.find(c => c.id === id)) ?? newAdminCow(), [id, isNew]);
   const [cow, setCow] = useState<AdminCow>(baseCow);
+  // Unknown id (not built-in, not saved in this browser) → "not found" instead of a blank editable cow.
+  const [missing, setMissing] = useState(false);
   const [tab, setTab] = useState<Tab>("details");
   const [toast, setToast] = useState<{ text: string; tone: "success" | "error"; key: number } | null>(null);
   const [dirty, setDirty] = useState(false);
@@ -41,7 +43,11 @@ export default function CowDetailsEditor({ id }: { id: string }) {
       return () => window.clearTimeout(timer);
     }
     const draft = window.localStorage.getItem(adminCowStorageKey(id));
-    if (!draft) return;
+    if (!draft) {
+      if (adminCattle.some(c => c.id === id)) return;
+      const timer = window.setTimeout(() => setMissing(true), 0);
+      return () => window.clearTimeout(timer);
+    }
     const timer = window.setTimeout(() => {
       try { setCow({ ...baseCow, ...JSON.parse(draft) }); } catch {}
     }, 0);
@@ -92,6 +98,8 @@ export default function CowDetailsEditor({ id }: { id: string }) {
   }
   function removePhoto(src: string) { setPhotos(photos.filter(photo => photo !== src)); }
   function makeMain(src: string) { setPhotos([src, ...photos.filter(photo => photo !== src)]); }
+
+  if (missing) return <main className="admin-page"><div className="empty-state"><Icon name="search" size={28}/><b>গরুটি পাওয়া যায়নি</b><p><strong>{id}</strong> আইডির কোনো গরু নেই। <Link href="/admin/cows">গরুর তালিকায় ফিরে যান</Link></p></div></main>;
 
   return <main className="admin-page cow-editor-page">
     <div className="editor-heading"><div><p className="admin-breadcrumb"><Link href="/admin">ড্যাশবোর্ড</Link><span>/</span><Link href="/admin/cows">গরুর তালিকা</Link><span>/</span>{isNew ? "নতুন গরু" : cow.id}</p><div className="editor-title-row"><h1>{title}</h1>{adminStatusLabels[adminStatus(cow)] && <span className={`status-pill ${adminStatus(cow)}`}><i/>{adminStatusLabels[adminStatus(cow)]}</span>}</div><p>এখানের সব তথ্য ওয়েবসাইটের গরুর পেজে দেখানো হয়।</p></div><div className="editor-actions"><span className="save-status" role="status">{dirty ? "● সংরক্ষণ করা হয়নি" : ""}</span>{!isNew && !cow.draft && <Link href={`/korbani-goru/${baseCow.id}`} target="_blank" className="admin-secondary"><Icon name="eye"/> লাইভ পেজ</Link>}</div></div>

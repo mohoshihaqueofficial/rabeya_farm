@@ -8,6 +8,8 @@ import { bnNumber, catalogue } from "@/data/cattle";
 import PaymentForm from "../partial-payment/payment-form";
 import "../partial-payment/payment.css";
 
+// Unpublished, draft or unknown IDs get a real 404 (not a streamed 200).
+export const dynamicParams = false;
 export function generateStaticParams() { return catalogue.map(cow => ({ id: cow.id })); }
 
 export async function generateMetadata({ params }: PageProps<"/korbani-goru/[id]/full-payment">): Promise<Metadata> {

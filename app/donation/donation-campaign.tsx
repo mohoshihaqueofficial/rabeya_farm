@@ -36,7 +36,7 @@ export default function DonationCampaign({ cow }: { cow: Cow }) {
       channelRef.current = channel;
     }
     function syncFromStorage(event: StorageEvent) {
-      if (event.key === storageKey && event.newValue) setCampaign(JSON.parse(event.newValue) as CampaignState);
+      if (event.key === storageKey && event.newValue) { try { setCampaign(JSON.parse(event.newValue) as CampaignState); } catch {} }
     }
     window.addEventListener("storage", syncFromStorage);
     return () => { window.cancelAnimationFrame(hydrationFrame); channelRef.current?.close(); window.removeEventListener("storage", syncFromStorage); };

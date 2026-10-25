@@ -1,16 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { readStoredList } from "@/app/components/use-stored-list";
 import { blogPosts, blogStorageKey, type BlogPost } from "@/data/blogs";
 
 export const blogsChangeEvent = "rabeya-admin-blogs-change";
 
 export function loadAdminBlogs(): BlogPost[] {
-  try {
-    const saved = window.localStorage.getItem(blogStorageKey);
-    if (saved) return JSON.parse(saved);
-  } catch {}
-  return blogPosts;
+  // Only well-formed posts are used; a broken or wrong-shaped value falls back to the built-in list.
+  const saved = readStoredList<BlogPost>(blogStorageKey)?.filter(post => typeof post.slug === "string" && typeof post.title === "string" && Array.isArray(post.content));
+  return saved ?? blogPosts;
 }
 
 // Whole list is stored under one key; throws if the browser storage is full.

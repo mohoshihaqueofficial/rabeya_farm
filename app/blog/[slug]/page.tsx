@@ -9,6 +9,8 @@ import ShareButtons from "./share-buttons";
 
 type BlogDetailsProps = { params: Promise<{ slug: string }> };
 
+// Unpublished, draft or unknown IDs get a real 404 (not a streamed 200).
+export const dynamicParams = false;
 export function generateStaticParams() {
   return activeBlogPosts.map(post => ({ slug: post.slug }));
 }
